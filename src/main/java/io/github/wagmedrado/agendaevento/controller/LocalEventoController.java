@@ -3,6 +3,8 @@ package io.github.wagmedrado.agendaevento.controller;
 import io.github.wagmedrado.agendaevento.model.LocalEvento;
 import io.github.wagmedrado.agendaevento.service.LocalEventoService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,7 @@ public class LocalEventoController {
   }
 
   @GetMapping("{id}")
+  @ApiResponses({@ApiResponse(code = 200, message = "Registro encontrado"), @ApiResponse(code = 404, message = "Registro não encontrado")})
   public ResponseEntity<Object> obterLocalEventoPorId( @PathVariable(value = "id") Integer id ){
     Optional<LocalEvento> optional = this.service.findById(id);
     if (!optional.isPresent()) {
@@ -78,6 +81,7 @@ public class LocalEventoController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @ApiResponses({@ApiResponse(code = 201, message = "Registro salvo com sucesso"), @ApiResponse(code = 400, message = "Erro de validação")})
   public LocalEvento salvarLocalEvento( @RequestBody @Valid LocalEvento localEvento ){
     return this.service.save(localEvento);
   }
