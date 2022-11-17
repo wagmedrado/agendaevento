@@ -41,16 +41,16 @@ public class ResponsavelController {
   @Autowired
   private ResponsavelService service;
 
-  @GetMapping
-  @ApiOperation("Obter lista de responsáveis")
-  public ResponseEntity<Page<Responsavel>> obterResponsaveis(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-    return ResponseEntity
-            .ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(this.service.findAll(pageable));
-  }
+//  @GetMapping
+//  @ApiOperation("Obter lista de responsáveis")
+//  public ResponseEntity<Page<Responsavel>> obterResponsaveis(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+//    return ResponseEntity
+//            .ok()
+//            .contentType(MediaType.APPLICATION_JSON)
+//            .body(this.service.findAll(pageable));
+//  }
 
-  @GetMapping("/buscar")
+  @GetMapping()
   @ApiOperation("Obter lista de responsáveis com filtro de busca")
   public ResponseEntity<Page<Responsavel>> buscarResponsaveis(
           Responsavel filtro,

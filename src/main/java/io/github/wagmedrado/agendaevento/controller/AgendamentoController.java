@@ -50,7 +50,12 @@ public class AgendamentoController {
   private AgendamentoService service;
 
   @GetMapping
-  public ResponseEntity<Page<DadosAgendamentoDTO>> obterAgendamentos(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+  public ResponseEntity<Page<DadosAgendamentoDTO>> obterAgendamentos(@PageableDefault(
+          page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    if (principal instanceof UserDetails) {
+//      System.out.println("username: " + ((UserDetails) principal).getUsername());
+//    }
     return ResponseEntity
             .ok()
             .contentType(MediaType.APPLICATION_JSON)

@@ -42,15 +42,15 @@ public class LocalEventoController {
   @Autowired
   private LocalEventoService service;
 
-  @GetMapping
-  public ResponseEntity<Page<LocalEvento>> obterLocaisEvento(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-    return ResponseEntity
-            .ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(this.service.findAll(pageable));
-  }
+//  @GetMapping
+//  public ResponseEntity<Page<LocalEvento>> obterLocaisEvento(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+//    return ResponseEntity
+//            .ok()
+//            .contentType(MediaType.APPLICATION_JSON)
+//            .body(this.service.findAll(pageable));
+//  }
 
-  @GetMapping("/buscar")
+  @GetMapping()
   public ResponseEntity<Page<LocalEvento>> buscarLocaisEvnto(
           LocalEvento filtro,
           @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
