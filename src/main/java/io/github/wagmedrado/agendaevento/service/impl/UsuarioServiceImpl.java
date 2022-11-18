@@ -51,11 +51,9 @@ public class UsuarioServiceImpl implements UserDetailsService {
     Usuario usuario = repository.findByLoginAndInativo(username, false)
             .orElseThrow(() -> new UsernameNotFoundException("Usuário não existe ou inativo."));
 
-    //String[] roles = new String[]{"ROLE_USER"};
     String[] sistemas = usuario.getSistemas().stream().map(Sistema::getNomeRole).toArray(String[]::new);
     String[] recursos = usuario.getRecursos().stream().map(Recurso::getNomeRole).toArray(String[]::new);
     String[] roles = Stream.concat(Arrays.stream(sistemas), Arrays.stream(recursos)).toArray(String[]::new);
-    System.out.println(Arrays.toString(roles));
 
     return User
             .builder()

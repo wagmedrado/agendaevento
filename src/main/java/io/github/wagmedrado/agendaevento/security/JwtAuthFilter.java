@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
@@ -26,26 +27,37 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   private UsuarioServiceImpl usuarioService;
 
   @Override
-  protected void doFilterInternal(
-          HttpServletRequest httpServletRequest,
-          HttpServletResponse httpServletResponse,
-          FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+          throws ServletException, IOException {
 
-    String authorization = httpServletRequest.getHeader("Authorization");
-
-    if (authorization != null && authorization.startsWith("Bearer")) {
-      String token = authorization.split(" ")[1];
-      boolean isValid = jwtService.tokenValido(token);
-
-      if (isValid) {
-        String loginUsuario = jwtService.obterLoginUsuario(token);
-        UserDetails usuario = usuarioService.loadUserByUsername(loginUsuario);
-        UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-        user.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-        SecurityContextHolder.getContext().setAuthentication(user);
-      }
+    if (!hasAuthorizationBearer(request)) {
+      filterChain.doFilter(request, response);
+      return;
     }
 
-    filterChain.doFilter(httpServletRequest, httpServletResponse);
+    String authorization = request.getHeader("Authorization");
+    String token = authorization.split(" ")[1];
+    boolean isValid = jwtService.tokenValido(token);
+
+    if (isValid) {
+      String loginUsuario = jwtService.obterLoginUsuario(token);
+      UserDetails usuario = usuarioService.loadUserByUsername(loginUsuario);
+      System.out.println("\nusuario: " + usuario.getUsername());
+      System.out.println("acessos: " + usuario.getAuthorities() + "\n");
+
+      UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+      authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+
+      filterChain.doFilter(request, response);
+      return;
+    }
+
+    filterChain.doFilter(request, response);
+  }
+
+  private boolean hasAuthorizationBearer(HttpServletRequest request) {
+    String header = request.getHeader("Authorization");
+    return !(ObjectUtils.isEmpty(header) || !header.startsWith("Bearer"));
   }
 }

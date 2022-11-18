@@ -21,8 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -49,6 +49,7 @@ public class AgendamentoController {
   @Autowired
   private AgendamentoService service;
 
+  @PreAuthorize("hasAnyRole('ROLE_AGENDA_EVENTO', 'ROLE_ADMIN_AGENDA_EVENTO')")
   @GetMapping
   public ResponseEntity<Page<DadosAgendamentoDTO>> obterAgendamentos(@PageableDefault(
           page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -56,10 +57,7 @@ public class AgendamentoController {
 //    if (principal instanceof UserDetails) {
 //      System.out.println("username: " + ((UserDetails) principal).getUsername());
 //    }
-    return ResponseEntity
-            .ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(this.service.findAll(pageable).map(item -> converter(item)));
+    return ResponseEntity.ok(this.service.findAll(pageable).map(item -> converter(item)));
   }
 
   @PostMapping
@@ -75,7 +73,7 @@ public class AgendamentoController {
     if (!optional.isPresent()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado.");
     }
-    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(converter(optional.get()));
+    return ResponseEntity.ok(converter(optional.get()));//.contentType(MediaType.APPLICATION_JSON).body(converter(optional.get()));
   }
 
   @PatchMapping("{id}")

@@ -3,7 +3,10 @@ package io.github.wagmedrado.agendaevento.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -38,7 +41,8 @@ public class JwtService {
             .compact();
   }
 
-  private Claims obterClaims(String token) throws ExpiredJwtException {
+  private Claims obterClaims(String token)
+          throws ExpiredJwtException, MalformedJwtException, UnsupportedJwtException, SignatureException, IllegalArgumentException {
     return Jwts
             .parser()
             .setSigningKey(chaveAssinatura)
@@ -49,10 +53,15 @@ public class JwtService {
   public boolean tokenValido(String token) {
     try {
       Claims claims = obterClaims(token);
+      //System.out.println("clains: " + claims);
       Date dataExpiracao = claims.getExpiration();
+      if (dataExpiracao == null) {
+        return true;
+      }
       LocalDateTime data = dataExpiracao.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
       return !LocalDateTime.now().isAfter(data);
-    } catch (ExpiredJwtException e) {
+    } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException ex) {
+      //System.out.println(ex.getMessage());
       return false;
     }
   }

@@ -61,3 +61,17 @@ public class Usuario implements Serializable {
     this.senha = senha;
   }
 }
+
+/*
+select * from intranet.sistema;
+select * from intranet.recurso;
+
+insert into intranet.sistema (nome, descricao, nome_role) values
+('Controle de Acessos', 'Sistema para gerenciamento de acesso de usuários', 'CONTROLE_ACESSO'),
+('Agendamento de Eventos', 'Sistema para agendamento de eventos', 'AGENDA_EVENTO');
+
+insert into intranet.recurso (sistema, descricao, nome_role) values
+(1,'Resetar senha de usuários','RESET_PASSWORD'),
+(2,'Usuário comum Agendamento de Eventos','USER_AGENDA_EVENTO'),
+(2,'Resetar administrador Agendamento de Eventos','ADMIN_AGENDA_EVENTO');
+*/
