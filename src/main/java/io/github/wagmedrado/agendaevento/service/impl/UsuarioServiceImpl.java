@@ -23,43 +23,44 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UsuarioServiceImpl implements UserDetailsService {
 
-  @Autowired
-  private PasswordEncoder encoder;
+    @Autowired
+    private PasswordEncoder encoder;
 
-  @Autowired
-  private UsuarioRepository repository;
+    @Autowired
+    private UsuarioRepository repository;
 
-  @Transactional
-  public Usuario salvar(Usuario usuario) {
-    return repository.save(usuario);
-  }
-
-  public UserDetails autenticar(Usuario usuario) {
-    UserDetails user = loadUserByUsername(usuario.getLogin());
-    boolean senhaOk = encoder.matches(usuario.getSenha(), user.getPassword());
-
-    if (senhaOk) {
-      return user;
+    @Transactional
+    public Usuario salvar(Usuario usuario) {
+        return repository.save(usuario);
     }
 
-    throw new RegraNegocioException("Senha inválida");
-  }
+    public UserDetails autenticar(Usuario usuario) {
+        UserDetails user = loadUserByUsername(usuario.getLogin());
+        boolean senhaOk = encoder.matches(usuario.getSenha(), user.getPassword());
 
-  @Transactional
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Usuario usuario = repository.findByLoginAndInativo(username, false)
-            .orElseThrow(() -> new UsernameNotFoundException("Usuário não existe ou inativo."));
+        if (senhaOk) {
+            return user;
+        }
 
-    String[] sistemas = usuario.getSistemas().stream().map(Sistema::getNomeRole).toArray(String[]::new);
-    String[] recursos = usuario.getRecursos().stream().map(Recurso::getNomeRole).toArray(String[]::new);
-    String[] roles = Stream.concat(Arrays.stream(sistemas), Arrays.stream(recursos)).toArray(String[]::new);
+        throw new RegraNegocioException("Senha inválida");
+    }
 
-    return User
-            .builder()
-            .username(usuario.getLogin())
-            .password(usuario.getSenha())
-            .roles(roles)
-            .build();
-  }
+    @Transactional
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Usuario usuario = repository.findByLoginAndInativo(username, false)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não existe ou inativo."));
+
+        String[] sistemas = usuario.getSistemas().stream().map(Sistema::getNomeRole).toArray(String[]::new);
+        String[] recursos = usuario.getRecursos().stream().map(Recurso::getNomeRole).toArray(String[]::new);
+        String[] roles = Stream.concat(Arrays.stream(sistemas), Arrays.stream(recursos)).toArray(String[]::new);
+        System.out.println("roles: " + Arrays.toString(roles));
+
+        return User
+                .builder()
+                .username(usuario.getLogin())
+                .password(usuario.getSenha())
+                .roles(roles)
+                .build();
+    }
 }
