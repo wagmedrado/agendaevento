@@ -2,7 +2,6 @@ package io.github.wagmedrado.agendaevento.service;
 
 import io.github.wagmedrado.agendaevento.dto.AgendamentoDTO;
 import io.github.wagmedrado.agendaevento.model.Agendamento;
-import io.github.wagmedrado.agendaevento.enums.StatusAgenda;
 import java.util.Optional;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -19,6 +18,6 @@ public interface AgendamentoService {
   public Optional<Agendamento> findById(Integer id);
 
   public Agendamento salvar(AgendamentoDTO dto);
-  public void atualizarStatus(Integer id, StatusAgenda status);
+  public void atualizarStatus(Integer id, String novoStatus);
   public void delete(Agendamento item);
 }

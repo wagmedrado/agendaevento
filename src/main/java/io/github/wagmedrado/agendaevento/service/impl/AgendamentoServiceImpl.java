@@ -102,12 +102,14 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
   @Override
   @Transactional
-  public void atualizarStatus(Integer id, StatusAgenda status) {
+  public void atualizarStatus(Integer id, String novoStatus) {
     Optional<Agendamento> optional = this.repository.findById(id);
     if (!optional.isPresent()) {
       throw new RegraNegocioException("Agendamento não encontrado");
     }
     Agendamento agendamento = optional.get();
+      System.out.println("status: " + novoStatus);
+    StatusAgenda status = StatusAgenda.valueOf(novoStatus);
     agendamento.setStatus(status);
     if (status.equals(StatusAgenda.CANCELADO)) {
       agendamento.setDataCancelamento(LocalDateTime.now());

@@ -1,12 +1,12 @@
 package io.github.wagmedrado.agendaevento.controller;
 
 import io.github.wagmedrado.agendaevento.dto.AgendamentoDTO;
+import io.github.wagmedrado.agendaevento.dto.AgendamentoInput;
 import io.github.wagmedrado.agendaevento.dto.DadosAgendamentoDTO;
 import io.github.wagmedrado.agendaevento.dto.DadosEquipamentoDTO;
 import io.github.wagmedrado.agendaevento.dto.DadosResponsavelDTO;
 import io.github.wagmedrado.agendaevento.model.Agendamento;
 import io.github.wagmedrado.agendaevento.model.Equipamento;
-import io.github.wagmedrado.agendaevento.enums.StatusAgenda;
 import io.github.wagmedrado.agendaevento.model.Responsavel;
 import io.github.wagmedrado.agendaevento.service.AgendamentoService;
 import java.util.Collections;
@@ -78,8 +78,8 @@ public class AgendamentoController {
 
   @PatchMapping("{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void updateStatus( @PathVariable Integer id, @RequestBody String novoStatus ){
-    this.service.atualizarStatus(id, StatusAgenda.valueOf(novoStatus));
+  public void updateStatus( @PathVariable Integer id, @RequestBody AgendamentoInput status ){
+    this.service.atualizarStatus(id, status.getNovoStatus());
   }
 
   private DadosAgendamentoDTO converter(Agendamento item) {
